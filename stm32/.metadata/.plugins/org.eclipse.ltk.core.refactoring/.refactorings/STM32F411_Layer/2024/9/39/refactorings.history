@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;STM32F411_Layer/STM32F411_Layer.ioc&apos; to &apos;Peronsal_Project_Car.ioc&apos;" description="Rename resource &apos;STM32F411_Layer.ioc&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="STM32F411_Layer.ioc" name="Peronsal_Project_Car.ioc" stamp="1727165424351" updateReferences="true"/>
+</session>

@@ -1,0 +1,10 @@
+14:09:58 **** Incremental Build of configuration Debug for project Project_Auto_RC_Car ****
+make -j4 all 
+arm-none-eabi-size  Project_Auto_RC_Car.elf 
+   text	   data	    bss	    dec	    hex	filename
+  33080	     96	  21496	  54672	   d590	Project_Auto_RC_Car.elf
+Finished building: default.size.stdout
+ 
+
+14:09:59 Build Finished. 0 errors, 0 warnings. (took 522ms)
+

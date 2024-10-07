@@ -1,0 +1,79 @@
+#include "ap.h"
+#include "led.h"
+
+// Global Variables
+uint8_t receive_data[8];
+uint8_t IN_value [4] = {0, };
+
+// Initialization of app
+void apInit() {
+
+}
+
+// New Main Functions
+void apMain() {
+	// Initialization of UART
+	HAL_UART_Receive_DMA(&huart1, receive_data, sizeof(receive_data));
+
+	while(1) control_motor();
+}
+
+// Control Motor
+void control_motor() {
+	uint8_t left_duty = 100, right_duty = 100;
+
+	// Select IN Values
+	select_IN_values(IN_value);
+
+	// Enter IN Values to Motor driver
+	enter_IN_values(IN_value);
+
+	// Entr duty of Motor.
+	enter_duty_of_motor(left_duty, right_duty);
+}
+
+// Select IN Values
+void select_IN_values(uint8_t* IN_value) {
+	if(receive_data[5] == 0) {
+		if(receive_data[6] == 0) {
+			IN_value[0] = 1;
+			IN_value[1] = 1;
+			IN_value[2] = 1;
+			IN_value[3] = 1;
+		}else if(receive_data[6] == 1) {
+			IN_value[0] = 1;
+			IN_value[1] = 0;
+			IN_value[2] = 1;
+			IN_value[3] = 0;
+		}else if(receive_data[6] == 2) {
+			IN_value[0] = 0;
+			IN_value[1] = 1;
+			IN_value[2] = 0;
+			IN_value[3] = 1;
+		}else if(receive_data[6] == 4) {
+			IN_value[0] = 0;
+			IN_value[1] = 1;
+			IN_value[2] = 1;
+			IN_value[3] = 0;
+		}else if(receive_data[6] == 8) {
+			IN_value[0] = 1;
+			IN_value[1] = 0;
+			IN_value[2] = 0;
+			IN_value[3] = 1;
+		}
+	}
+}
+
+// Enter IN Values
+void enter_IN_values(uint8_t* IN_value) {
+	HAL_GPIO_WritePin(IN1_PORT, IN1_PIN, IN_value[0]);
+	HAL_GPIO_WritePin(IN2_PORT, IN2_PIN, IN_value[1]);
+	HAL_GPIO_WritePin(IN3_PORT, IN3_PIN, IN_value[2]);
+	HAL_GPIO_WritePin(IN4_PORT, IN4_PIN, IN_value[3]);
+}
+
+// Enter Duty of Motor
+void enter_duty_of_motor(uint8_t p_left_duty, uint8_t p_right_duty) {
+	TIM1->CCR2 = p_left_duty;
+	TIM3->CCR2 = p_right_duty;
+}

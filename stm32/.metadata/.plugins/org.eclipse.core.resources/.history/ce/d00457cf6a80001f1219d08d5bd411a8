@@ -1,0 +1,82 @@
+#include "ap.h"
+#include "led.h"
+
+// Global Variables
+uint8_t receive_data[8];
+uint8_t IN1_value
+
+// Initialization of app
+void apInit() {
+
+}
+
+// New Main Functions
+void apMain() {
+	// Initialization of UART
+	HAL_UART_Receive_DMA(&huart1, receive_data, sizeof(receive_data));
+
+	while(1) {
+		control_motor();
+	}
+}
+
+// Control Motor
+void control_motor() {
+	// Select IN Values
+	select_IN_values();
+
+	// Enter IN Values to Motor driver
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 1);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, 0);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, 1);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, 0);
+	// Entr duty of Motor.
+	TIM1->CCR2 = 100;
+	TIM3->CCR2 = 100;
+}
+
+// Select IN Values
+void select_IN_values() {
+	if(receive_data[5] == 0) {
+		if(receive_data[6] == 0) {
+			IN_value[0] = GPIO_PIN_SET;
+			IN_value[1] = GPIO_PIN_SET;
+			IN_value[2] = GPIO_PIN_SET;
+			IN_value[3] = GPIO_PIN_SET;
+		}else if(receive_data[6] == 1) {
+			IN_value[0] = GPIO_PIN_SET;
+			IN_value[1] = GPIO_PIN_RESET;
+			IN_value[2] = GPIO_PIN_SET;
+			IN_value[3] = GPIO_PIN_RESET;
+		}else if(receive_data[6] == 2) {
+			IN_value[0] = GPIO_PIN_RESET;
+			IN_value[1] = GPIO_PIN_SET;
+			IN_value[2] = GPIO_PIN_RESET;
+			IN_value[3] = GPIO_PIN_SET;
+		}else if(receive_data[6] == 4) {
+			IN_value[0] = GPIO_PIN_RESET;
+			IN_value[1] = GPIO_PIN_SET;
+			IN_value[2] = GPIO_PIN_SET;
+			IN_value[3] = GPIO_PIN_RESET;
+		}else if(receive_data[6] == 8) {
+			IN_value[0] = GPIO_PIN_SET;
+			IN_value[1] = GPIO_PIN_RESET;
+			IN_value[2] = GPIO_PIN_RESET;
+			IN_value[3] = GPIO_PIN_SET;
+		}
+	}
+}
+
+// Enter IN Values
+void enter_IN_values() {
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
+}
+
+// Enter Duty of Motor
+void enter_duty_of_motor(uint8_t left_duty, uint8_t right_duty) {
+	TIM1->CCR2 = 100;
+	TIM3->CCR2 = 100;
+}

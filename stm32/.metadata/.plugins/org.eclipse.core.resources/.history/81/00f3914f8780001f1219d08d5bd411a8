@@ -1,0 +1,36 @@
+/*
+ * HC_SR04.h
+ *
+ *  Created on: Oct 2, 2024
+ *      Author: OMG
+ */
+
+#ifndef HC_SR04_H_
+#define HC_SR04_H_
+
+// Include Header File
+#include "gpio.h"
+#include "main.h"
+#include "tim.h"
+#include "usart.h"
+
+#include "delay_us.h"
+
+// Global Variables
+
+static arm-none-eabi-gcc -o "Project_Auto_RC_Car.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\DATA\SOC_workspace\stm32\Project_Auto_RC_Car\STM32F411RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Project_Auto_RC_Car.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+C:/ST/STM32CubeIDE_1.16.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: ./app/HC_SR04.o:C:/DATA/SOC_workspace/stm32/Project_Auto_RC_Car/Debug/../app/HC_SR04.h:21: multiple definition of `distance'; ./Core/Src/freertos.o:C:/DATA/SOC_workspace/stm32/Project_Auto_RC_Car/app/HC_SR04.h:21: first defined here
+collect2.exe: error: ld returned 1 exit status
+make: *** [makefile:71: Project_Auto_RC_Car.elf] Error 1
+"make -j4 all" terminated with exit code 2. Build might be incomplete.
+uint8_t distance = 0;
+
+// Define Constant
+#define TRIG_PORT 	GPIOA
+#define TRIG_PIN    GPIO_PIN_1
+
+// Function prototype
+void HCSR04 (void);
+uint8_t get_Distance();
+
+#endif /* HC_SR04_H_ */

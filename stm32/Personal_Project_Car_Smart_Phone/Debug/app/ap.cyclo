@@ -1,0 +1,6 @@
+../app/ap.c:14:6:apInit	1
+../app/ap.c:21:6:apMain	1
+../app/ap.c:30:6:control_motor	15
+../app/ap.c:122:6:check_duty_of_motor	3
+../app/ap.c:131:6:control_IN_Value	5
+../app/ap.c:162:6:enter_IN_values	1

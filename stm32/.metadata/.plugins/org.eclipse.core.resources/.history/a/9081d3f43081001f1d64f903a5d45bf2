@@ -1,0 +1,29 @@
+/*
+ * HC_SR04.h
+ *
+ *  Created on: Oct 2, 2024
+ *      Author: OMG
+ */
+
+#ifndef HC_SR04_H_
+#define HC_SR04_H_
+
+// Include Header File
+#include "gpio.h"
+#include "main.h"
+#include "tim.h"
+#include "usart.h"
+
+#include "delay_us.h"
+
+// Global Variables
+
+// Define Constant
+#define FRONT_TRIG_PORT 	GPIOA
+#define FRONT_TRIG_PIN    GPIO_PIN_1
+
+// Function prototype
+void HCSR04 (void);
+uint8_t get_Distance();
+
+#endif /* HC_SR04_H_ */

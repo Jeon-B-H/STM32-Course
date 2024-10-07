@@ -1,0 +1,31 @@
+/*
+ * HC_SR04.h
+ *
+ *  Created on: Oct 2, 2024
+ *      Author: OMG
+ */
+
+#ifndef HC_SR04_H_
+#define HC_SR04_H_
+
+// Include Header File
+#include "gpio.h"
+#include "main.h"
+#include "tim.h"
+#include "usart.h"
+
+// Global Variables
+uint16_t IC_Value1 = 0;  // Input Capture == Start Point of Echo when ehco starts High-Level
+uint16_t IC_Value2 = 0;  // Input Capture == End Point of Echo when ehco ends High-Level
+uint16_t echoTime = 0;
+uint8_t captureFlag = 0;
+uint8_t distance = 0;
+
+// Define Constant
+#define TRIG_PORT 	GPIOA
+#define TRIG_PIN    GPIO_PIN_1
+
+
+
+
+#endif /* HC_SR04_H_ */

@@ -1,0 +1,304 @@
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * File Name          : freertos.c
+  * Description        : Code for freertos applications
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2024 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+
+/* Includes ------------------------------------------------------------------*/
+#include "FreeRTOS.h"
+#include "task.h"
+#include "main.h"
+#include "cmsis_os.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include "motor.h"
+#include "HC_SR04.h"
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+/* USER CODE BEGIN Variables */
+extern uint8_t receive_data[8];
+extern uint8_t auto_manual;
+extern uint8_t previous_receive_data;
+extern uint8_t distance [3];
+
+/* USER CODE END Variables */
+/* Definitions for defaultTask */
+osThreadId_t defaultTaskHandle;
+const osThreadAttr_t defaultTask_attributes = {
+  .name = "defaultTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for sonic */
+osThreadId_t sonicHandle;
+const osThreadAttr_t sonic_attributes = {
+  .name = "sonic",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for motor */
+osThreadId_t motorHandle;
+const osThreadAttr_t motor_attributes = {
+  .name = "motor",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for bluetooth */
+osThreadId_t bluetoothHandle;
+const osThreadAttr_t bluetooth_attributes = {
+  .name = "bluetooth",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for sonic_right */
+osThreadId_t sonic_rightHandle;
+const osThreadAttr_t sonic_right_attributes = {
+  .name = "sonic_right",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for Control_RC_Car */
+osThreadId_t Control_RC_CarHandle;
+const osThreadAttr_t Control_RC_Car_attributes = {
+  .name = "Control_RC_Car",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+
+/* Private function prototypes -----------------------------------------------*/
+/* USER CODE BEGIN FunctionPrototypes */
+
+/* USER CODE END FunctionPrototypes */
+
+void StartDefaultTask(void *argument);
+void StartTask02(void *argument);
+void StartTask03(void *argument);
+void StartTask04(void *argument);
+void StartTask05(void *argument);
+void StartTask06(void *argument);
+
+void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+
+/**
+  * @brief  FreeRTOS initialization
+  * @param  None
+  * @retval None
+  */
+void MX_FREERTOS_Init(void) {
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* USER CODE BEGIN RTOS_MUTEX */
+  /* add mutexes, ... */
+  /* USER CODE END RTOS_MUTEX */
+
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* add semaphores, ... */
+  /* USER CODE END RTOS_SEMAPHORES */
+
+  /* USER CODE BEGIN RTOS_TIMERS */
+  /* start timers, add new ones, ... */
+  /* USER CODE END RTOS_TIMERS */
+
+  /* USER CODE BEGIN RTOS_QUEUES */
+  /* add queues, ... */
+  /* USER CODE END RTOS_QUEUES */
+
+  /* Create the thread(s) */
+  /* creation of defaultTask */
+  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+
+  /* creation of sonic */
+  sonicHandle = osThreadNew(StartTask02, NULL, &sonic_attributes);
+
+  /* creation of motor */
+  motorHandle = osThreadNew(StartTask03, NULL, &motor_attributes);
+
+  /* creation of bluetooth */
+  bluetoothHandle = osThreadNew(StartTask04, NULL, &bluetooth_attributes);
+
+  /* creation of sonic_right */
+  sonic_rightHandle = osThreadNew(StartTask05, NULL, &sonic_right_attributes);
+
+  /* creation of Control_RC_Car */
+  Control_RC_CarHandle = osThreadNew(StartTask06, NULL, &Control_RC_Car_attributes);
+
+  /* USER CODE BEGIN RTOS_THREADS */
+  /* add threads, ... */
+  /* USER CODE END RTOS_THREADS */
+
+  /* USER CODE BEGIN RTOS_EVENTS */
+  /* add events, ... */
+  /* USER CODE END RTOS_EVENTS */
+
+}
+
+/* USER CODE BEGIN Header_StartDefaultTask */
+/**
+  * @brief  Function implementing the defaultTask thread.
+  * @param  argument: Not used
+  * @retval None
+  */
+/* USER CODE END Header_StartDefaultTask */
+void StartDefaultTask(void *argument)
+{
+  /* USER CODE BEGIN StartDefaultTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartDefaultTask */
+}
+
+/* USER CODE BEGIN Header_StartTask02 */
+/**
+* @brief Function implementing the sonic thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask02 */
+void StartTask02(void *argument)
+{
+  /* USER CODE BEGIN StartTask02 */
+	/* Infinite loop */
+	for(;;)
+	{
+		// Select current state.
+		if(receive_data[5]==2 && previous_receive_data == 0) {
+			if(auto_manual) auto_manual = 0;
+			else auto_manual = 1;
+
+			previous_receive_data = 2;
+		} else if(receive_data[5] != 2)previous_receive_data = 0;
+
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, auto_manual);
+
+		if(!auto_manual) {
+			control_motor(1, 100, 100);
+		}
+
+		osDelay(1);
+	}
+  /* USER CODE END StartTask02 */
+}
+
+/* USER CODE BEGIN Header_StartTask03 */
+/**
+* @brief Function implementing the motor thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask03 */
+void StartTask03(void *argument)
+{
+  /* USER CODE BEGIN StartTask03 */
+  /* Infinite loop */
+  for(;;)
+  {
+	  if(auto_manual) {
+		  Front_HCSR04 ();
+	  }
+	  osDelay(1);
+  }
+  /* USER CODE END StartTask03 */
+}
+
+/* USER CODE BEGIN Header_StartTask04 */
+/**
+* @brief Function implementing the bluetooth thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask04 */
+void StartTask04(void *argument)
+{
+  /* USER CODE BEGIN StartTask04 */
+  /* Infinite loop */
+  for(;;)
+  {
+	  if(auto_manual) {
+		  Left_HCSR04 ();
+	  }
+
+    osDelay(1);
+  }
+  /* USER CODE END StartTask04 */
+}
+
+/* USER CODE BEGIN Header_StartTask05 */
+/**
+* @brief Function implementing the sonic_right thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask05 */
+void StartTask05(void *argument)
+{
+  /* USER CODE BEGIN StartTask05 */
+  /* Infinite loop */
+  for(;;)
+  {
+	  if(auto_manual) {
+	      Right_HCSR04 ();
+	  }
+
+	  osDelay(1);
+  }
+  /* USER CODE END StartTask05 */
+}
+
+/* USER CODE BEGIN Header_StartTask06 */
+/**
+* @brief Function implementing the Control_RC_Car thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask06 */
+void StartTask06(void *argument)
+{
+  /* USER CODE BEGIN StartTask06 */
+  /* Infinite loop */
+  for(;;)
+  {
+	  if(auto_manual) control_RC_Car();
+  }
+  /* USER CODE END StartTask06 */
+}
+
+/* Private application code --------------------------------------------------*/
+/* USER CODE BEGIN Application */
+
+/* USER CODE END Application */
+

@@ -1,0 +1,35 @@
+/*
+ * ap.h
+ *
+ *  Created on: Sep 13, 2024
+ *      Author: OMG
+ */
+
+#ifndef AP_H_
+#define AP_H_
+
+// Include Header Files
+#include "hw.h"
+#include "usart.h"
+#include "gpio.h"
+
+// Define Constant
+#define IN1_PIN     GPIO_PIN_5
+#define IN2_PIN     GPIO_PIN_6
+#define IN3_PIN	 	GPIO_PIN_7
+#define IN4_PIN		GPIO_PIN_6
+
+#define IN1_PORT 	GPIOA
+#define IN2_PORT	GPIOA
+#define IN3_PORT	GPIOA
+#define IN4_PORT	GPIOB
+
+// Declare Function Prototype
+void apInit();
+void apMain();
+void select_IN_values(uint8_t* IN_value);
+void enter_IN_values(uint8_t* IN_value);
+void enter_duty_of_motor(uint8_t left_duty, uint8_t right_duty);
+
+
+#endif /* AP_H_ */

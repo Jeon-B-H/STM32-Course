@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Personal_Project_Elevator/app/optical_senseor.c&apos; to &apos;optical_sensor.c&apos;" description="Rename resource &apos;optical_senseor.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="app/optical_senseor.c" name="optical_sensor.c" stamp="1727569680247" updateReferences="true"/>
+</session>

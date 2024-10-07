@@ -1,0 +1,10 @@
+12:29:05 **** Build of configuration Debug for project Personal_Project_Car_Smart_Phone ****
+make -j4 all 
+arm-none-eabi-size  Personal_Project_Car_Smart_Phone.elf 
+   text	   data	    bss	    dec	    hex	filename
+  17512	     12	   2156	  19680	   4ce0	Personal_Project_Car_Smart_Phone.elf
+Finished building: default.size.stdout
+ 
+
+12:29:05 Build Finished. 0 errors, 0 warnings. (took 418ms)
+

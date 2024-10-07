@@ -1,0 +1,5 @@
+../app/ap.c:14:6:apInit	8	static
+../app/ap.c:21:6:apMain	8	static
+../app/ap.c:28:6:control_motor	16	static
+../app/ap.c:91:6:control_IN_Value	16	static
+../app/ap.c:122:6:enter_IN_values	8	static

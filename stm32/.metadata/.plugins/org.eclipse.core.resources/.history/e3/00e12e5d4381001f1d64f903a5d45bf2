@@ -1,0 +1,21 @@
+/*
+ * Control_RC_Car.h
+ *
+ *  Created on: Oct 3, 2024
+ *      Author: OMG
+ */
+
+#ifndef CONTROL_RC_CAR_H_
+#define CONTROL_RC_CAR_H_
+
+// Include Header File
+#include "gpio.h"
+
+// Global Variables
+extern uint8_t distance [3];
+
+// Function Prototype
+void control_RC_Car(=);
+void control_RC_Car(uint8_t distance);
+
+#endif /* CONTROL_RC_CAR_H_ */

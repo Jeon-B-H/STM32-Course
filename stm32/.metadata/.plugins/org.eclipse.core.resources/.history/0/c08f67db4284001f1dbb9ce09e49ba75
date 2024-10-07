@@ -1,0 +1,26 @@
+/*
+ * Control_RC_Car.c
+ *
+ *  Created on: Oct 3, 2024
+ *      Author: OMG
+ */
+#include "Control_RC_Car.h"
+
+uint16_t counter = 0;
+
+void control_RC_Car() {
+	while(auto_manual) {
+		// Check Front HC-SR04
+		if(distance[0] >= 15 && distance[1] > 9 && distance[2] > 9) control_motor(1, 80, 80);
+		else {
+			if(distance[1] > distance[2]) {
+				control_motor(3, 50, 50);
+				HAL_Delay(800);
+			}else {
+				control_motor(4, 50, 50);
+				HAL_Delay(800);
+			}
+		}
+	}
+}
+

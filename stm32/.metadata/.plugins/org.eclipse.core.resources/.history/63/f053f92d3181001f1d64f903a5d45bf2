@@ -1,0 +1,55 @@
+#include "HC_SR04.h"
+
+static uint8_t distance;
+static uint16_t IC_Value1;  // Input Capture == Start Point of Echo when ehco starts High-Level
+static uint16_t IC_Value2;  // Input Capture == End Point of Echo when ehco ends High-Level
+static uint16_t echoTime;
+static uint8_t captureFlag;
+
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+
+	if(htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
+	{
+		if(captureFlag  == 0)
+		{
+			IC_Value1 = HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1);
+			captureFlag = 1;
+			__HAL_TIM_SET_CAPTUREPOLARITY(&htim2, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_FALLING);
+		}
+		else if(captureFlag == 1)
+		{
+			IC_Value2 = HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1);
+			__HAL_TIM_SET_COUNTER(&htim2, 0);
+
+			if(IC_Value2 > IC_Value1)
+			{
+				echoTime = IC_Value2 - IC_Value1;
+			}
+			else if(IC_Value1 > IC_Value2)
+			{
+				echoTime = (0xFFFF - IC_Value1) + IC_Value2;
+			}
+
+			distance = echoTime / 58;
+			captureFlag = 0;
+			__HAL_TIM_SET_CAPTUREPOLARITY(&htim2, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_RISING);
+			__HAL_TIM_DISABLE_IT(&htim2, TIM_IT_CC1);
+		}
+	}
+}
+
+void Front_HCSR04 (void) {
+	HAL_GPIO_WritePin(FRONT_TRIG_PORT, FRONT_TRIG_PIN, 0);
+	delay_us(1);
+	HAL_GPIO_WritePin(FRONT_TRIG_PORT, FRONT_TRIG_PIN, 1);
+	delay_us(10);
+	HAL_GPIO_WritePin(FRONT_TRIG_PORT, FRONT_TRIG_PIN, 0);
+
+	__HAL_TIM_ENABLE_IT(&htim2, TIM_IT_CC1);
+}
+
+
+void get_distance(TIM_HandleTypeDef *parameter_htim) {
+
+}
